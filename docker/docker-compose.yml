@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  disease-detection:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: disease_detection_system
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../uploads:/app/uploads
+      - ../output:/app/output
+      - ../models:/app/models
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=app.py
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G

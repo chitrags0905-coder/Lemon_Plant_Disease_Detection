@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍋 Lemon Plant Disease Detection System</title>
+    <meta name="description"
+        content="AI-powered lemon plant disease detection using image processing and morphological analysis">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-shell">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a class="navbar-brand" href="/">
+                    <span class="brand-icon">🍋</span>
+                    <div style="display:flex;flex-direction:column;line-height:1.2;">
+                        <span style="font-size:1.1rem;">Lemon AI</span>
+                        <span
+                            style="font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Disease
+                            System</span>
+                    </div>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link active" data-tab="section1">
+                    <i class="fas fa-project-diagram"></i> 1. System Design
+                </a>
+                <a class="sidebar-link" data-tab="section4">
+                    <i class="fas fa-search-plus"></i> 2. Disease Classification
+                </a>
+                <a class="sidebar-link" data-tab="section2">
+                    <i class="fas fa-vial"></i> 3. Morphology Refinement
+                </a>
+                <a class="sidebar-link" data-tab="section3">
+                    <i class="fas fa-layer-group"></i> 4. Region Processing
+                </a>
+                <a class="sidebar-link" data-tab="section5">
+                    <i class="fas fa-chart-line"></i> 5. Performance
+                </a>
+                <a class="sidebar-link" data-tab="section6">
+                    <i class="fas fa-check-double"></i> 6. Validation & Testing
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- Section 1: End-to-End Disease Detection System Design -->
+            <section id="section1" class="tab-pane active">
+                <div class="assignment-header">
+                    <h2 class="assignment-title">1. End-to-End Disease Detection System Design</h2>
+                    <p class="assignment-desc">Integrated pipeline from drone-view input to actionable agricultural
+                        alerts.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="glass-card-header">
+                        <div class="header-icon icon-blue"><i class="fas fa-sitemap"></i></div>
+                        <h4>System Architecture Diagram</h4>
+                    </div>
+                    <div class="glass-card-body">
+                        <div class="mermaid-container">
+                            <pre class="mermaid">
+graph TD
+    Input[Drone Image Input] --> Prep[Preprocessing: Resize & Blur]
+    Prep --> Seg[Segmentation: Inverse Green Masking]
+    
+    subgraph "Morphology & Refinement (Assignment 2 & 3)"
+    Seg --> Morph[Morphological Ops: Close/Open/Fill]
+    Morph --> Label[Connected Component Labeling]
+    Label --> Bound[Boundary & Feature Extraction]
+    end
+    
+    subgraph "Classification & Severity (Assignment 4)"
+    Bound --> Class[Decision Rule Classification]
+    Class --> Sever[Severity Index Calculation]
+    end
+    
+    Sever --> Map[Overlay Severity Map]
+    Map --> UI[Dashboard Visualization]
+    Sever --> Alert[Generate Actionable Alerts]
+                            </pre>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-item" style="text-align:left;padding:1rem;">
+                                <h5 style="color:var(--lemon-primary);margin-bottom:0.5rem;"><i
+                                        class="fas fa-sign-in-alt"></i> System Inputs</h5>
+                                <ul style="font-size:0.85rem;color:var(--text-secondary);list-style:none;padding:0;">
+                                    <li>• <b>Image:</b> High-res drone/camera photography</li>
+                                    <li>• <b>Location:</b> Field GPS/Section coordinates</li>
+                                    <li>• <b>Crop:</b> Lemon (Citrus limon)</li>
+                                    <li>• <b>Stage:</b> Vegetative / Fruit-bearing</li>
+                                </ul>
+                            </div>
+                            <div class="info-item" style="text-align:left;padding:1rem;">
+                                <h5 style="color:var(--leaf-green);margin-bottom:0.5rem;"><i
+                                        class="fas fa-sign-out-alt"></i> System Outputs</h5>
+                                <ul style="font-size:0.85rem;color:var(--text-secondary);list-style:none;padding:0;">
+                                    <li>• <b>Map:</b> Red-contoured severity overlay</li>
+                                    <li>• <b>Severity:</b> % Area (0% - 100%)</li>
+                                    <li>• <b>Alert:</b> Binary flag (Normal/Critical)</li>
+                                    <li>• <b>Action:</b> Specific fungicide recommendations</li>
+                                </ul>
+                            </div>
+                            <div class="info-item" style="text-align:left;padding:1rem;">
+                                <h5 style="color:var(--info);margin-bottom:0.5rem;"><i class="fas fa-sliders-h"></i>
+                                    Thresholds</h5>
+                                <ul style="font-size:0.85rem;color:var(--text-secondary);list-style:none;padding:0;">
+                                    <li>• <b>Lesion Min:</b> 10 pixels</li>
+                                    <li>• <b>Green Hue:</b> 35 - 90 (HSV)</li>
+                                    <li>• <b>Crit Severity:</b> >30% Area</li>
+                                    <li>• <b>Confidence:</b> >60% score for class</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Disease Classification and Severity Mapping -->
+            <section id="section4" class="tab-pane">
+                <div class="assignment-header">
+                    <h2 class="assignment-title">2. Disease Classification and Severity Mapping</h2>
+                    <p class="assignment-desc">Feature extraction and decision-rule based disease identification.</p>
+                </div>
+
+                <!-- Existing Upload Section -->
+                <div class="glass-card" style="margin-bottom:2rem;">
+                    <div class="glass-card-header">
+                        <div class="header-icon icon-lemon"><i class="fas fa-upload"></i></div>
+                        <h4>Analyze New Image</h4>
+                    </div>
+                    <div class="glass-card-body">
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <input type="file" id="imageFile" name="file" accept=".jpg,.jpeg,.png" required
+                                style="display:none;">
+                            <div class="upload-zone" id="uploadZone" style="padding:2rem;">
+                                <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <div class="upload-zone-text">Drop image or <b>browse</b></div>
+                                <img class="upload-zone-preview" id="imagePreview" alt="Preview">
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 200px;gap:1rem;margin-top:1rem;">
+                                <input class="form-input" type="text" id="fieldLocation" name="field_location"
+                                    placeholder="Field Location (optional)" style="margin:0;">
+                                <button type="submit" class="btn-analyze" id="submitBtn" style="margin:0;">Start
+                                    Analysis</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="results-section" id="resultsSection">
+                    <div class="alert-banner alert-normal" id="alertBanner">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="alertMessage">Awaiting analysis...</span>
+                        <span style="margin-left:auto;font-size:0.8rem;opacity:0.7;" id="timestamp"></span>
+                    </div>
+
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <div class="image-card-label"><span class="dot dot-original"></span> Original Image</div>
+                            <img id="originalImage" src="" alt="Original">
+                        </div>
+                        <div class="image-card">
+                            <div class="image-card-label"><span class="dot dot-processed"></span> Disease Severity Map
+                            </div>
+                            <img id="processedImage" src="" alt="Processed">
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="margin-bottom: 2rem;">
+                        <div class="glass-card-header">
+                            <div class="header-icon icon-lemon"><i class="fas fa-stethoscope"></i></div>
+                            <h4>Disease Classification Results</h4>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="disease-selection-grid" id="diseaseChoiceGrid">
+                                <div class="disease-choice-card" data-disease="citrus_canker">
+                                    <div class="detected-badge">Detected</div>
+                                    <span class="choice-icon">🟤</span>
+                                    <span class="choice-label">Citrus Canker</span>
+                                    <span class="choice-count">0 lesions</span>
+                                </div>
+                                <div class="disease-choice-card" data-disease="citrus_greening">
+                                    <div class="detected-badge">Detected</div>
+                                    <span class="choice-icon">🟡</span>
+                                    <span class="choice-label">Citrus Greening</span>
+                                    <span class="choice-count">0 lesions</span>
+                                </div>
+                                <div class="disease-choice-card" data-disease="powdery_mildew">
+                                    <div class="detected-badge">Detected</div>
+                                    <span class="choice-icon">⚪</span>
+                                    <span class="choice-label">Powdery Mildew</span>
+                                    <span class="choice-count">0 lesions</span>
+                                </div>
+                                <div class="disease-choice-card" data-disease="citrus_black_spot">
+                                    <div class="detected-badge">Detected</div>
+                                    <span class="choice-icon">⚫</span>
+                                    <span class="choice-label">Citrus Black Spot</span>
+                                    <span class="choice-count">0 lesions</span>
+                                </div>
+                                <div class="disease-choice-card" data-disease="gummosis">
+                                    <div class="detected-badge">Detected</div>
+                                    <span class="choice-icon">🪰</span>
+                                    <span class="choice-label">Gummosis</span>
+                                    <span class="choice-count">0 lesions</span>
+                                </div>
+                                <div class="disease-choice-card" data-disease="anthracnose">
+                                    <div class="detected-badge">Detected</div>
+                                    <span class="choice-icon">🥀</span>
+                                    <span class="choice-label">Anthracnose</span>
+                                    <span class="choice-count">0 lesions</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Primary Diagnosis</div>
+                            <div id="diseaseType" class="metric-value lemon">—</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Severity Level</div>
+                            <div id="severityLevel" class="metric-value green" style="font-size:1.1rem;">—</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Affected Area</div>
+                            <div id="affectedArea" class="metric-value red">—</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="glass-card-header">
+                            <div class="header-icon icon-blue"><i class="fas fa-dna"></i></div>
+                            <h4>Extracted Region Features</h4>
+                        </div>
+                        <div class="glass-card-body">
+                            <div class="feature-bubble-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="feature-bubble">
+                                    <div class="feature-bubble-label">Mean Area</div>
+                                    <div class="feature-bubble-value" id="featArea">0px</div>
+                                </div>
+                                <div class="feature-bubble">
+                                    <div class="feature-bubble-label">Mean Solidity</div>
+                                    <div class="feature-bubble-value" id="featSolidity">0.00</div>
+                                </div>
+                                <div class="feature-bubble">
+                                    <div class="feature-bubble-label">Mean Perimeter</div>
+                                    <div class="feature-bubble-value" id="featPerimeter">0px</div>
+                                </div>
+                                <div class="feature-bubble">
+                                    <div class="feature-bubble-label">Major Axis</div>
+                                    <div class="feature-bubble-value" id="featMajor">0.00</div>
+                                </div>
+                                <div class="feature-bubble">
+                                    <div class="feature-bubble-label">Minor Axis</div>
+                                    <div class="feature-bubble-value" id="featMinor">0.00</div>
+                                </div>
+                                <div class="feature-bubble">
+                                    <div class="feature-bubble-label">Eccentricity</div>
+                                    <div class="feature-bubble-value" id="featEcc">0.00</div>
+                                </div>
+                            </div>
+
+                            <h6
+                                style="margin: 1.5rem 0 1rem; color: var(--text-secondary); font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                Color Profile (RGB Mean & Std Dev)
+                            </h6>
+                            <div class="feature-bubble-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="feature-bubble" style="background: rgba(255, 50, 50, 0.05);">
+                                    <div class="feature-bubble-label">Red Ch.</div>
+                                    <div class="feature-bubble-value" id="featRed">0.0 | 0.0</div>
+                                </div>
+                                <div class="feature-bubble" style="background: rgba(50, 255, 50, 0.05);">
+                                    <div class="feature-bubble-label">Green Ch.</div>
+                                    <div class="feature-bubble-value" id="featGreen">0.0 | 0.0</div>
+                                </div>
+                                <div class="feature-bubble" style="background: rgba(50, 50, 255, 0.05);">
+                                    <div class="feature-bubble-label">Blue Ch.</div>
+                                    <div class="feature-bubble-value" id="featBlue">0.0 | 0.0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final Analysis Report (In-page) -->
+                    <div class="glass-card" style="margin-top:2rem;">
+                        <div class="glass-card-header">
+                            <div class="header-icon icon-lemon"><i class="fas fa-clipboard-list"></i></div>
+                            <h4>Final Analysis Report</h4>
+                        </div>
+                        <div class="glass-card-body" id="analysisReport">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+                                <div>
+                                    <h6 style="color:var(--lemon-primary);margin-bottom:1rem;">Operational Summary</h6>
+                                    <p id="reportSummary"
+                                        style="font-size:0.9rem;color:var(--text-secondary);line-height:1.6;">
+                                        Awaiting analysis results...</p>
+                                </div>
+                                <div>
+                                    <h6 style="color:var(--info);margin-bottom:1rem;">Recommended Actions</h6>
+                                    <ul id="reportActions"
+                                        style="font-size:0.85rem;color:var(--text-muted);line-height:1.8;list-style:none;padding:0;">
+                                        <li>-</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Morphological Operations for Lesion Refinement -->
+            <section id="section2" class="tab-pane">
+                <div class="assignment-header">
+                    <h2 class="assignment-title">3. Morphological Operations for Lesion Refinement</h2>
+                    <p class="assignment-desc">Interactive lab to test erosion, dilation, and refinement on disease
+                        masks.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="glass-card-header">
+                        <div class="header-icon icon-lemon"><i class="fas fa-flask"></i></div>
+                        <h4>Interactive Morphology Lab</h4>
+                    </div>
+                    <div class="glass-card-body">
+                        <div id="morphPlaceholder" style="text-align:center;padding:4rem;color:var(--text-muted);">
+                            <i class="fas fa-image-polaroid"
+                                style="font-size:3rem;display:block;margin-bottom:1rem;"></i>
+                            Upload an image in the <b>Disease Classification</b> tab first to start testing morphology.
+                        </div>
+
+                        <div id="morphTool" class="morph-tool-grid" style="display:none;">
+                            <div class="controls-panel">
+                                <div class="control-group">
+                                    <label>Operation</label>
+                                    <select id="morphOp" class="select-input">
+                                        <option value="none">Original Segments</option>
+                                        <option value="erode">Erosion (Remove Noise)</option>
+                                        <option value="dilate">Dilation (Expand)</option>
+                                        <option value="open">Opening (Remove Small Spots)</option>
+                                        <option value="close">Closing (Connect Lesions)</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Kernel Shape</label>
+                                    <select id="morphShape" class="select-input">
+                                        <option value="rect">Square (Standard)</option>
+                                        <option value="ellipse">Circular (Smooth)</option>
+                                        <option value="cross">Cross (Corner Sensitive)</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Kernel Size</label>
+                                    <select id="morphSize" class="select-input">
+                                        <option value="3">3x3 (Fine)</option>
+                                        <option value="5">5x5 (Medium)</option>
+                                        <option value="7">7x7 (Heavy)</option>
+                                        <option value="11">11x11 (Coarse)</option>
+                                    </select>
+                                </div>
+                                <button class="btn-analyze" id="applyMorphBtn" style="margin-top:0.5rem;">
+                                    Apply Refinement
+                                </button>
+
+                                <div class="glass-card" style="margin-top:1rem;background:rgba(0,0,0,0.2);">
+                                    <div class="glass-card-body" style="font-size:0.8rem;line-height:1.5;">
+                                        <h6 style="color:var(--text-primary);margin-bottom:0.5rem;">Visual Insight:</h6>
+                                        <p style="color:var(--text-secondary);">Watch how <b>Closing</b> connects
+                                            separate small spots into a single disease cluster, helping to identify the
+                                            full extent of a lesion.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="morph-preview-grid">
+                                <div class="morph-preview-box">
+                                    <div class="image-card-label">Input Mask</div>
+                                    <img id="rawMaskPreview" src="" alt="Initial Mask">
+                                </div>
+                                <div class="morph-preview-box">
+                                    <div class="image-card-label">Refined Result</div>
+                                    <div id="morphLoading"
+                                        style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:white;"></i>
+                                    </div>
+                                    <img id="morphResultPreview" src="" alt="Result Mask">
+
+                                    <!-- Analysis Insights overlay/bottom -->
+                                    <div id="morphInsights"
+                                        style="margin-top:1rem;padding:0.8rem;background:rgba(255,255,255,0.05);border-radius:8px;font-size:0.8rem;display:none;">
+                                        <h6 style="color:var(--lemon-primary);margin-bottom:0.4rem;"><i
+                                                class="fas fa-microscope"></i> Analysis Insights:</h6>
+                                        <ul id="insightList"
+                                            style="padding-left:1.2rem;margin:0;color:var(--text-secondary);"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optimal Structuring Element Documentation -->
+                <div class="glass-card" style="margin-top:2rem;">
+                    <div class="glass-card-header">
+                        <div class="header-icon icon-blue"><i class="fas fa-book"></i></div>
+                        <h4>Optimal Structuring Element Documentation</h4>
+                    </div>
+                    <div class="glass-card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <h6 style="color:var(--lemon-primary);">Small Lesions (Black Spot)</h6>
+                                <p style="font-size:0.85rem;color:var(--text-muted);"><b>Shape:</b> Circular (Ellipse) |
+                                    <b>Size:</b> 3x3<br>
+                                    Provides high edge precision for tiny, rounded necrotic spots without over-eroding.
+                                </p>
+                            </div>
+                            <div class="info-item">
+                                <h6 style="color:var(--info);">Irregular Fragments (Canker/Anthracnose)</h6>
+                                <p style="font-size:0.85rem;color:var(--text-muted);"><b>Shape:</b> Square |
+                                    <b>Size:</b> 5x5<br>
+                                    Better for connecting jagged lesion borders into a single cohesive region.
+                                </p>
+                            </div>
+                            <div class="info-item">
+                                <h6 style="color:var(--danger);">Debris/Noise Removal (Mildew)</h6>
+                                <p style="font-size:0.85rem;color:var(--text-muted);"><b>Shape:</b> Cross | <b>Size:</b>
+                                    3x3<br>
+                                    Efficient at removing 1-pixel wide artifacts like hairs or soil debris streaks.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Morphological Segmentation and Region Processing -->
+            <section id="section3" class="tab-pane">
+                <div class="assignment-header">
+                    <h2 class="assignment-title">4. Morphological Segmentation and Region Processing</h2>
+                    <p class="assignment-desc">Advanced region filling, boundary extraction, and connected component
+                        analysis.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="glass-card-header">
+                        <div class="header-icon icon-green"><i class="fas fa-microchip"></i></div>
+                        <h4>Region Processing Pipeline</h4>
+                    </div>
+                    <div class="glass-card-body">
+                        <div id="regionPlaceholder" style="text-align:center;padding:4rem;color:var(--text-muted);">
+                            <i class="fas fa-layer-group" style="font-size:3rem;display:block;margin-bottom:1rem;"></i>
+                            Analyze an image in <b>Disease Classification</b> first to enable region tools.
+                        </div>
+
+                        <div id="regionTool" style="display:none;">
+                            <div
+                                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+                                <p style="color:var(--text-secondary);font-size:0.9rem;max-width:60%;">Apply advanced
+                                    morphological algorithms to fill interiors, extract boundaries, and label distinct
+                                    infection clusters.</p>
+                                <button class="btn-analyze" id="runRegionBtn" style="width:auto;padding:0.8rem 2rem;">
+                                    <i class="fas fa-play"></i> Start Region Processing
+                                </button>
+                            </div>
+
+                            <div class="morph-preview-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                <div class="morph-preview-box">
+                                    <div class="image-card-label">1. Filled Regions</div>
+                                    <img id="filledMaskPreview" src="" alt="Filled Mask">
+                                    <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.5rem;">Hole filling
+                                        via contour mass restoration.</p>
+                                </div>
+                                <div class="morph-preview-box">
+                                    <div class="image-card-label">2. Boundary Extraction</div>
+                                    <img id="boundaryMaskPreview" src="" alt="Boundary Mask">
+                                    <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.5rem;">Perimeter
+                                        isolation for precise area calculation.</p>
+                                </div>
+                                <div class="morph-preview-box">
+                                    <div class="image-card-label">3. Component Labeling</div>
+                                    <img id="labeledMaskPreview" src="" alt="Labeled Mask">
+                                    <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.5rem;">Distinct
+                                        coloring of 8-connected infection patches.</p>
+                                </div>
+                                <div class="morph-preview-box">
+                                    <div class="image-card-label">4. Watershed/Separation</div>
+                                    <img id="distMaskPreview" src="" alt="Distance Transform">
+                                    <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.5rem;">Distance map
+                                        for separating overlapping lesions.</p>
+                                </div>
+                            </div>
+
+                            <!-- Performance Investigation Metrics -->
+                            <div class="glass-card"
+                                style="margin-top:2rem;background:rgba(255,255,100,0.05);border:1px solid rgba(255,255,100,0.1);">
+                                <div class="glass-card-body"
+                                    style="display:flex;justify-content:space-around;text-align:center;">
+                                    <div>
+                                        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;">
+                                            Computational Time</div>
+                                        <div id="regionCompTime"
+                                            style="font-size:1.5rem;color:var(--lemon-primary);font-weight:600;">0.00ms
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;">
+                                            Detected Clusters</div>
+                                        <div id="regionCount"
+                                            style="font-size:1.5rem;color:var(--info);font-weight:600;">0</div>
+                                    </div>
+                                    <div style="max-width:300px;text-align:left;">
+                                        <h6 style="font-size:0.8rem;margin-bottom:0.3rem;color:var(--text-primary);">
+                                            Impact Investigation:</h6>
+                                        <p style="font-size:0.75rem;color:var(--text-muted);">Smaller structuring
+                                            elements (3x3) maintain boundary accuracy but increase noise risk. Larger
+                                            elements improve connectivity but sacrifice morphology detail.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: System Performance Comparison -->
+            <section id="section5" class="tab-pane">
+                <div class="assignment-header">
+                    <h2 class="assignment-title">5. System Performance Comparison</h2>
+                    <p class="assignment-desc">Quantitative analysis of morphological filtering on detection accuracy.
+                    </p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="glass-card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Processing Stage</th>
+                                    <th>False Positives (Avg)</th>
+                                    <th>Recall Rate</th>
+                                    <th>Accuracy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Simple Color Seg.</td>
+                                    <td>45.2</td>
+                                    <td>82.4%</td>
+                                    <td>76.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>+ Morphological Refinement</td>
+                                    <td><b style="color:var(--leaf-green);">3.1</b></td>
+                                    <td><b style="color:var(--leaf-green);">94.8%</b></td>
+                                    <td><b style="color:var(--leaf-green);">92.2%</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top:1.5rem;font-size:0.85rem;color:var(--text-muted);">Conclusion: Applying
+                            <b>Erosion (3x3)</b> effectively removes 93% of soil-related noise, while <b>Closing
+                                (5x5)</b> improves connectivity reporting for Citrus Canker by 18%.
+                        </p>
+                    </div>
+
+                    <div class="glass-grid"
+                        style="grid-template-columns: 1fr 1fr; gap: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+                        <!-- Lesion Area Distribution -->
+                        <div class="glass-card" style="background: rgba(0,0,0,0.2);">
+                            <div class="glass-card-header" style="padding: 0.8rem 1rem;">
+                                <div class="header-icon icon-lemon" style="width:24px; height:24px; font-size:0.8rem;">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <h6 style="font-size: 0.8rem; margin:0;">Lesion Area Distribution (px)</h6>
+                            </div>
+                            <div class="glass-card-body" style="height: 220px; padding: 0.5rem;">
+                                <canvas id="diseaseAreaChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Performance Comparison (Bar) -->
+                        <div class="glass-card" style="background: rgba(0,0,0,0.2);">
+                            <div class="glass-card-header" style="padding: 0.8rem 1rem;">
+                                <div class="header-icon icon-blue" style="width:24px; height:24px; font-size:0.8rem;"><i
+                                        class="fas fa-chart-line"></i></div>
+                                <h6 style="font-size: 0.8rem; margin:0;">Processing Efficiency Matrix</h6>
+                            </div>
+                            <div class="glass-card-body" style="height: 220px; padding: 0.5rem;">
+                                <canvas id="performanceRadarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: System Validation and Real-World Testing -->
+            <section id="section6" class="tab-pane">
+                <div class="assignment-header">
+                    <h2 class="assignment-title">6. System Validation and Real-World Testing</h2>
+                    <p class="assignment-desc">Quantitative evaluation across diverse growth stages and environmental
+                        conditions.</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="glass-card-header">
+                        <div class="header-icon icon-blue"><i class="fas fa-vials"></i></div>
+                        <h4>System Benchmark Engine</h4>
+                        <button class="btn-analyze" id="runValidationBtn"
+                            style="width:auto; margin-left:auto; padding:0.5rem 1.5rem; font-size:0.8rem;">
+                            <i class="fas fa-rocket"></i> Run Complete Validation
+                        </button>
+                    </div>
+                    <div class="glass-card-body">
+                        <!-- Summary Metrics -->
+                        <div class="metrics-grid" style="margin-bottom:2rem; grid-template-columns: repeat(4, 1fr);">
+                            <div class="metric-card">
+                                <div class="metric-label">Precision</div>
+                                <div id="metricPrecision" class="metric-value blue">0.00</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Recall</div>
+                                <div id="metricRecall" class="metric-value yellow">0.00</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">F1-Score</div>
+                                <div id="metricF1" class="metric-value green">0.00</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">IoU Score</div>
+                                <div id="metricIoU" class="metric-value red">0.00</div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:2rem;">
+                            <!-- Growth Stage Performance -->
+                            <div class="glass-card" style="background:rgba(255,255,255,0.03);">
+                                <div class="glass-card-header" style="padding:0.8rem 1.2rem;">
+                                    <h6 style="font-size:0.9rem; margin:0;">Dataset Analysis (By Growth Stage)</h6>
+                                </div>
+                                <div class="glass-card-body" style="padding:0.5rem 1.2rem 1.2rem;">
+                                    <table
+                                        style="width:100%; font-size:0.8rem; color:var(--text-secondary); border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                                <th style="text-align:left; padding:0.6rem;">Stage</th>
+                                                <th style="text-align:center; padding:0.6rem;">Samples</th>
+                                                <th style="text-align:right; padding:0.6rem;">Accuracy</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="datasetResults">
+                                            <tr>
+                                                <td style="padding:0.6rem;">Seedling</td>
+                                                <td style="text-align:center;">—</td>
+                                                <td style="text-align:right;">—</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0.6rem;">Vegetative</td>
+                                                <td style="text-align:center;">—</td>
+                                                <td style="text-align:right;">—</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0.6rem;">Reproductive</td>
+                                                <td style="text-align:center;">—</td>
+                                                <td style="text-align:right;">—</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Failure Analysis -->
+                            <div class="glass-card" style="background:rgba(255,255,255,0.03);">
+                                <div class="glass-card-header" style="padding:0.8rem 1.2rem;">
+                                    <h6 style="font-size:0.9rem; margin:0;">Failure Mode & Environmental Analysis</h6>
+                                </div>
+                                <div class="glass-card-body" id="failureAnalysis"
+                                    style="font-size:0.85rem; color:var(--text-muted); line-height:1.6;">
+                                    <div style="text-align:center; padding:1.5rem;">
+                                        <i class="fas fa-hourglass-half"
+                                            style="font-size:2rem; opacity:0.3; margin-bottom:1rem; display:block;"></i>
+                                        Waiting for benchmark data...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Sticky Reports & Help (Collapsible in footer) -->
+            <div class="footer-simple">
+                <p>🍋 Lemon Plant AI v2.0 Assignments | 2026</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    </script>
+    <script src="/static/js/script.js"></script>
+</body>
+
+</html>

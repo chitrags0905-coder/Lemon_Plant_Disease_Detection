@@ -1,0 +1,25 @@
+{
+  "timestamp": "20260306_004045",
+  "filename": "IMG20260101170301.jpg",
+  "crop_type": "lemon",
+  "field_location": "",
+  "disease_type": "lemon_scab",
+  "severity": {
+    "percentage": 44.7,
+    "level": "Critical - immediate intervention needed",
+    "alert": "CRITICAL",
+    "action": "Apply copper-based fungicide immediately. Prune and destroy severely affected branches."
+  },
+  "metrics": {
+    "processing_time": 3.86,
+    "false_positives_reduced": 16,
+    "lesions_connected": 114,
+    "disease_regions": 81
+  },
+  "disease_counts": {
+    "citrus_canker": 2,
+    "citrus_greening": 18,
+    "lemon_scab": 28
+  },
+  "num_regions": 81
+}
